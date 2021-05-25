@@ -24,7 +24,7 @@ class App {
   }
   //-------------------------------
   createScene() {
-    this.bg = new THREE.TextureLoader().load('space.jpg');
+    this.bg = new THREE.TextureLoader().load('./space.jpg');
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x000011);;
     this.scene.background = this.bg;

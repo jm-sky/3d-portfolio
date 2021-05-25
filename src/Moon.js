@@ -8,8 +8,8 @@ class Moon {
   //-------------------------------
   init() {
     this.geometry = new THREE.SphereGeometry(7, 24, 24);
-    this.bg = new THREE.TextureLoader().load('moon.jpg');
-    this.normalMap = new THREE.TextureLoader().load('normal.jpg');
+    this.bg = new THREE.TextureLoader().load('./moon.jpg');
+    this.normalMap = new THREE.TextureLoader().load('./normal.jpg');
 
     this.material = new THREE.MeshStandardMaterial({ 
       map: this.bg,
