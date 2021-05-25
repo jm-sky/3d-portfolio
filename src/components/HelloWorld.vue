@@ -1,6 +1,5 @@
 <template>
   <main>
-
     <header>
       <h1>Jan Madeyski</h1>
       <p>🚀 Welcome to my website!</p>
@@ -85,11 +84,4 @@
 </template>
 
 <script setup>
-import { defineProps, reactive } from 'vue'
-
-defineProps({
-  msg: String
-})
-
-const state = reactive({ count: 0 })
 </script>

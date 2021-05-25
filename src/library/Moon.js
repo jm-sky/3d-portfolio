@@ -5,6 +5,7 @@ class Moon {
   constructor(options = {}) {
     this.options = options;
     this.orbitSize = options.orbitSize || 50;
+    this.rotationSpeed = options.rotationSpeed || 0.01;
     this.init();
   }
   //-------------------------------
@@ -17,7 +18,7 @@ class Moon {
     group.add(this.moon);
 
     this.mesh = group;
-    this.mesh.position.y = 10;
+    this.mesh.position.y = 7;
   }
   //-------------------------------
   create_orbit() {
@@ -43,10 +44,12 @@ class Moon {
     this.moon.position.setX(this.orbitSize);
     this.moon.position.setY(0);
     this.moon.position.setZ(0);
+    this.moon.castShadow = true;
+    this.moon.receiveShadow = true;
   }
   //-------------------------------
   update() {
-    this.mesh.rotation.y += 0.01;
+    this.mesh.rotation.y += this.rotationSpeed;
     this.moon.rotation.y += 0.01;
     this.moon.rotation.x += 0.01;
   }
