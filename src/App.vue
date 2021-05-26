@@ -1,32 +1,45 @@
 <template>
-  <BgCanvas :editMode="!showContent" />
+  <MazeGen />
+  <!-- <BgCanvas :editMode="!showContent" />
   <a @click="switchContent" class="btn btn-dark border content-switch">
     <i class="fa" :class="showContent ? 'fa-rocket' : 'fa-envelope-open-text'"></i>
   </a>
-  <HelloWorld v-if="showContent" />
+  <HelloWorld v-if="showContent" /> -->
 </template>
 
-<script setup>
+<script>
 import HelloWorld from './components/HelloWorld.vue';
 import BgCanvas from './components/BgCanvas.vue';
-import { ref } from 'vue';
-import './style.css';
-import 'bootstrap/dist/css/bootstrap.css';
-import '@fortawesome/fontawesome-free/css/regular.css';
-import '@fortawesome/fontawesome-free/css/solid.css';
-import '@fortawesome/fontawesome-free/css/fontawesome.css';
+import MazeGen from './components/MazeGen.vue';
+import './sass/index.scss';
 
-const showContent = ref(false);
-const switchContent = () => {
-  showContent.value = !showContent.value;
+export default {
+  //===============================================
+  name: 'App',
+  //===============================================
+  components: {
+    HelloWorld, BgCanvas, MazeGen
+  },
+  //===============================================
+  data() {
+    return {
+      showContent: false
+    }
+  },
+  //===============================================
+  methods: {
+    //=================
+    switchContent() {
+      this.showContent = !this.showContent;
+    }
+    //=================
+  }
+  //===============================================
 }
-// This starter template is using Vue 3 experimental <script setup> SFCs
-// Check out https://github.com/vuejs/rfcs/blob/script-setup-2/active-rfcs/0000-script-setup.md
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
