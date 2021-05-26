@@ -1,55 +1,53 @@
 <template>
-  <MazeGen />
-  <!-- <BgCanvas :editMode="!showContent" />
-  <a @click="switchContent" class="btn btn-dark border content-switch">
-    <i class="fa" :class="showContent ? 'fa-rocket' : 'fa-envelope-open-text'"></i>
-  </a>
-  <HelloWorld v-if="showContent" /> -->
+  <div id="app">
+    <router-view></router-view>
+    <div class="bottom-menu">
+      <router-link class="btn btn-sm btn-dark mx-1 shadow" to="/">
+        <i class="fa fa-fw fa-home"></i>
+        Home
+      </router-link>
+      <router-link class="btn btn-sm btn-dark mx-1 shadow" to="/portfolio">
+        <i class="fa fa-fw fa-user"></i>
+        Portfolio
+      </router-link>
+      <router-link class="btn btn-sm btn-dark mx-1 shadow" to="/maze">
+        <i class="fa fa-fw fa-th"></i>
+        Maze
+      </router-link>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
-import BgCanvas from './components/BgCanvas.vue';
-import MazeGen from './components/MazeGen.vue';
 import './sass/index.scss';
 
 export default {
   //===============================================
   name: 'App',
   //===============================================
-  components: {
-    HelloWorld, BgCanvas, MazeGen
-  },
-  //===============================================
-  data() {
-    return {
-      showContent: false
-    }
-  },
-  //===============================================
-  methods: {
-    //=================
-    switchContent() {
-      this.showContent = !this.showContent;
-    }
-    //=================
-  }
-  //===============================================
 }
 </script>
 
-<style>
+<style lang="scss">
 #app {
+  width: 100vw;
+  height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #eee;
+  background: radial-gradient(circle at top, #777, #111);
 }
-.content-switch {
+
+.bottom-menu {
   position: fixed;
   bottom: 0.5rem;
-  left: 0.5rem;
-  z-index: 999;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+
+  .router-link-active {
+    box-shadow: rgba(255, 255, 255, 0.4) 0 0 0.5rem !important;
+  }
 }
 </style>

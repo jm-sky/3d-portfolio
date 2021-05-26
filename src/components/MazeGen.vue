@@ -1,10 +1,10 @@
 <template>
-  <div class="maze-gen border shadow">
-    <div class="p-1 mb-2 border text-white bg-dark"><strong>Maze Generator</strong></div>
-    <div class="p-1">
-      <button @click="traverse" class="btn btn-sm btn-primary border"><i class="fa fa-rocket"></i> GO</button>
+  <div class="maze-gen">
+    <div class="p-1 mb-1 big border rounded shadow text-white bg-dark"><strong>Maze Generator</strong></div>
+    <div class="p-1 mb-1 border rounded shadow">
+      <button @click="traverse" class="btn btn-sm btn-primary border rounded shadow"><i class="fa fa-rocket"></i> GO</button>
     </div>
-    <div class="p-2 border">
+    <div class="p-2 border rounded shadow">
       <div v-for="(row, r) in matrix" :key="`row-${r}`" :title="`Row: ${r}`">
         <MazeCell v-for="(cell, c) in row" :key="`cell-${c}`" 
           :visited="cell.visited"
