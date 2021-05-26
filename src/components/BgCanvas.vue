@@ -15,6 +15,10 @@ export default {
   //===============================================
   name: 'BgCanvas',
   //===============================================
+  props: {
+    editMode: Boolean
+  },
+  //===============================================
   data() {
     return {
       app: null,
@@ -24,9 +28,21 @@ export default {
     }
   },
   //===============================================
+  watch: {
+    //=================
+    editMode() {
+      this.app._gui.domElement.hidden = !this.editMode;
+      this.app._stats.domElement.hidden = !this.editMode;
+    }
+    //=================
+  },
+  //===============================================
   methods: {
     //=================
-    
+    moveCamera() {
+      const t = document.body.getBoundingClientRect().top;
+      this.app.scene.rotation.y = t * 0.001;
+    },
     //=================
   },
   //===============================================
@@ -48,20 +64,10 @@ export default {
     this.app._guiParams.moonFolder.add(this.moon, 'rotationSpeed', 0, 0.5, 0.001);
     this.app._guiParams.torusFolder.add(this.torus, 'rotationSpeed', 0, 0.5, 0.001);
     
-
-    const moveCamera = function() {
-      const t = document.body.getBoundingClientRect().top;
-      // moon.mesh.rotation.x += 0.05;
-      // moon.mesh.rotation.y += 0.075;
-      // moon.mesh.rotation.z += 0.05;
-
-      app.camera.position.x = 0 + t * -0.1;
-      app.camera.position.z = 30 + t * -0.0002;
-      app.camera.position.y = 0 + t * -0.0002;
-    }
-
-    // document.addEventListener('scroll', moveCamera);
+    document.addEventListener('scroll', this.moveCamera);
     app.animate();
+
+    window.$canvasApp = app;
   }
   //===============================================
 }
