@@ -47,7 +47,7 @@ export default {
   },
   //===============================================
   mounted() {
-    const app = new App({ helpers: false });
+    const app = new App({ helpers: false, createPlane: true });
     const torus = new Torus({ wireframe: false });
     const stars = Array(100).fill().map(_ => new Star({ spread: 400 }));
     const moon = new Moon();
@@ -61,13 +61,22 @@ export default {
     this.app.add(this.moon);
     this.app.add(...this.stars);
 
+    this.app._guiParams.moonFolder = this.app._gui.addFolder('Moon');
+    this.app._guiParams.torusFolder = this.app._gui.addFolder('Torus');
+    this.app._guiParams.moonFolder.open();
+    this.app._guiParams.torusFolder.open();
     this.app._guiParams.moonFolder.add(this.moon, 'rotationSpeed', 0, 0.5, 0.001);
     this.app._guiParams.torusFolder.add(this.torus, 'rotationSpeed', 0, 0.5, 0.001);
     
     document.addEventListener('scroll', this.moveCamera);
-    app.animate();
+    app.render();
 
     window.$canvasApp = app;
+  },
+  //===============================================
+  beforeUnmount() {
+    this.app._gui.domElement.remove();
+    this.app._stats.domElement.remove();
   }
   //===============================================
 }

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import math from '../library/src/math';
 
 class Star {
   //-------------------------------
@@ -13,7 +14,8 @@ class Star {
     this.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
     this.mesh = new THREE.Mesh(this.geometry, this.material);
 
-    const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(this.spread));
+    const [x, y, z] = Array(3).fill().map(() => math.randFloatSpread(this.spread));
+    // const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(this.spread));
     this.mesh.position.set(x, y, z);
   }
   //-------------------------------

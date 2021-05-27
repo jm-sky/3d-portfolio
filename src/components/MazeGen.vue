@@ -1,5 +1,5 @@
 <template>
-  <div class="maze-gen">
+  <div class="maze-gen text-center">
     <div class="p-1 mb-1 big border rounded shadow text-white bg-dark"><strong>Maze Generator</strong></div>
     <div class="p-1 mb-1 border rounded shadow">
       <button @click="traverse" class="btn btn-sm btn-primary border rounded shadow"><i class="fa fa-rocket"></i> GO</button>
@@ -80,7 +80,7 @@ export default {
           if (row[y+1]) cell.neighbors.push(row[y+1]);
           if (matrix[x-1] && matrix[x-1][y]) cell.neighbors.push(matrix[x-1][y]);
           if (matrix[x+1] && matrix[x+1][y]) cell.neighbors.push(matrix[x+1][y]);
-          console.log('[cell] x:', x, '| y:', y, '| cell:', cell);
+          // console.log('[cell] x:', x, '| y:', y, '| cell:', cell);
         })
       });
 
@@ -89,14 +89,14 @@ export default {
     },
     //=====================
     traverse() {
-      console.log('[maze-gen][traverse]', this.current);
+      // console.log('[maze-gen][traverse]', this.current);
       let node = this.current,
           notVisited = node.neighbors.filter(n => n.visited == false),
           len = notVisited.length,
           rand = this.getRandomInt(0, len),
           nextNode = notVisited[rand];
 
-      console.log('[maze-gen][traverse] notVisited:', notVisited, '| len:', len, '| rand:', rand, '| nextNode:', nextNode);
+      // console.log('[maze-gen][traverse] notVisited:', notVisited, '| len:', len, '| rand:', rand, '| nextNode:', nextNode);
 
       node.visited = true;
       node.step = this.step;

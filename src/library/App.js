@@ -2,8 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
+import Plane from './Plane.js';
 
-const SHADOWS = true;
+const SHADOWS = false;
 
 //-------------------------------------------------------------------------
 /**
@@ -21,6 +22,7 @@ class App {
     this.entities = [];
     this.helpers = {};
     this.lights = {};
+    this._previousRAF = null;
     this.init();
   }
   //-------------------------------
@@ -48,11 +50,6 @@ class App {
   createGUI() {
     this._guiParams = {};
     this._gui = new GUI();
-    this._guiParams.moonFolder = this._gui.addFolder('Moon');
-    this._guiParams.torusFolder = this._gui.addFolder('Torus');
-
-    this._guiParams.moonFolder.open();
-    this._guiParams.torusFolder.open();
   }
   //-------------------------------
   createScene() {
@@ -65,12 +62,9 @@ class App {
   }
   //-------------------------------
   createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(200, 200, 12, 12);
-    const material = new THREE.MeshStandardMaterial({ color: 0x333333 });
-    this.plane = new THREE.Mesh(geometry, material);
-    this.plane.rotation.x = -Math.PI / 2;
-    this.plane.receiveShadow = true;
-    this.scene.add(this.plane);
+    if (!this.options.createPlane) return;
+    const plane = new Plane(this.options);
+    this.add(plane);
   }
   //-------------------------------
   createRenderer() {
@@ -87,8 +81,11 @@ class App {
   //-------------------------------
   createCamera() {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.setY(20);
-    this.camera.position.setZ(50);
+    // this.camera.position.setY(20);
+    // this.camera.position.setZ(50);
+    let cameraPosition = this.options.cameraPosition || [0, 20, 20];
+    this.camera.position.set(...cameraPosition);
+    // cameraPosition
   }
   //-------------------------------
   createLights() {
@@ -120,21 +117,36 @@ class App {
   //-------------------------------
   add(...entities) {
     entities.forEach(entity => {
-      this.entities.push(entity);
+      let className = entity.constructor.name || 'unknown';
+      this.entities[className] = this.entities[className] || [];
+      this.entities[className].push(entity);
       if (entity.mesh) this.scene.add(entity.mesh);
     })
   }
   //-------------------------------
-  animate() {
-    requestAnimationFrame(() => this.animate());
-    this.entities.filter(entity => entity.update).forEach(entity => {
-      entity.update();
+  _RAF() {
+    requestAnimationFrame(t => {
+      if (this._previousRAF === null) {
+        this._previousRAF = t;
+      }
+      this.render(t - this._previousRAF);
+      this._previousRAF = t;
     })
+  }
+  //-------------------------------
+  render(timeInMs) {
+    let entities = Object.values(this.entities).flat();
+    entities.filter(entity => entity.update).forEach(entity => {
+      entity.update(timeInMs);
+    })
+
     this.renderer.render(this.scene, this.camera);
 
     if (this._stats) {
       this._stats.update();
     }
+
+    this._RAF();
   }
   //-------------------------------
 }

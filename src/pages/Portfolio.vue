@@ -20,7 +20,7 @@ export default {
   //===============================================
   data() {
     return {
-      showContent: false
+      showContent: true
     }
   },
   //===============================================
@@ -30,7 +30,7 @@ export default {
       this.showContent = !this.showContent;
     }
     //=================
-  }
+  },
   //===============================================
 }
 </script>

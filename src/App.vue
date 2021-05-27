@@ -2,17 +2,12 @@
   <div id="app">
     <router-view></router-view>
     <div class="bottom-menu">
-      <router-link class="btn btn-sm btn-dark mx-1 shadow" to="/">
-        <i class="fa fa-fw fa-home"></i>
-        Home
-      </router-link>
-      <router-link class="btn btn-sm btn-dark mx-1 shadow" to="/portfolio">
-        <i class="fa fa-fw fa-user"></i>
-        Portfolio
-      </router-link>
-      <router-link class="btn btn-sm btn-dark mx-1 shadow" to="/maze">
-        <i class="fa fa-fw fa-th"></i>
-        Maze
+      <router-link v-for="(link, index) in links" 
+          class="btn btn-sm btn-dark mx-1 shadow" 
+          :to="link.to"
+          :key="index">
+        <i class="fa fa-fw" :class="`fa-${link.icon}`"></i>
+        {{ link.text }}
       </router-link>
     </div>
   </div>
@@ -25,6 +20,17 @@ export default {
   //===============================================
   name: 'App',
   //===============================================
+  data() {
+    return {
+      links: [
+        { text: 'Home', to: '/', icon: 'home' },
+        { text: 'Portfolio', to: '/portfolio', icon: 'user' },
+        { text: 'Maze', to: '/maze', icon: 'th' },
+        { text: 'World', to: '/world', icon: 'globe' },
+      ]
+    }
+  },
+  //===============================================
 }
 </script>
 
@@ -34,7 +40,6 @@ export default {
   height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #eee;
   background: radial-gradient(circle at top, #777, #111);
 }
@@ -48,6 +53,8 @@ export default {
 
   .router-link-active {
     box-shadow: rgba(255, 255, 255, 0.4) 0 0 0.5rem !important;
+    font-weight: bold;
+    color: #0af;
   }
 }
 </style>
