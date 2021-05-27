@@ -29,8 +29,8 @@ export default {
   },
   //===============================================
   beforeUnmount() {
-    this.app._gui.domElement.remove();
-    this.app._stats.domElement.remove();
+    if (this.app._gui) this.app._gui.domElement.remove();
+    if (this.app._stats) this.app._stats.domElement.remove();
   }
   //===============================================
 }

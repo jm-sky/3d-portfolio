@@ -31,8 +31,8 @@ export default {
   watch: {
     //=================
     editMode() {
-      this.app._gui.domElement.hidden = !this.editMode;
-      this.app._stats.domElement.hidden = !this.editMode;
+      if (this.app._gui) this.app._gui.domElement.hidden = !this.editMode;
+      if (this.app._stats) this.app._stats.domElement.hidden = !this.editMode;
     }
     //=================
   },
@@ -40,33 +40,27 @@ export default {
   methods: {
     //=================
     moveCamera() {
-      const t = document.body.getBoundingClientRect().top;
-      this.app.scene.rotation.y = t * 0.001;
+      const top = document.body.getBoundingClientRect().top,
+            height = document.querySelector('main').offsetHeight,
+            progress = -top / height;
+
+      this.app.scene.rotation.y = -top * 0.001;
+      this.app.camera.position.x = this.app.camera.userData.start.x + Math.round(progress * 100);
+      this.app.camera.position.y = this.app.camera.userData.start.y + Math.round(progress * 100);
+      this.app.camera.position.z = this.app.camera.userData.start.z + Math.round(progress * 100);
     },
     //=================
   },
   //===============================================
   mounted() {
     const app = new App({ helpers: false, createPlane: true });
-    const torus = new Torus({ wireframe: false });
-    const stars = Array(100).fill().map(_ => new Star({ spread: 400 }));
-    const moon = new Moon();
-
     this.app = app;
-    this.torus = torus;
-    this.stars = stars;
-    this.moon = moon;
+    this.app.camera.position.set(10, 30, 10);;
 
-    this.app.add(this.torus);
-    this.app.add(this.moon);
-    this.app.add(...this.stars);
-
-    this.app._guiParams.moonFolder = this.app._gui.addFolder('Moon');
-    this.app._guiParams.torusFolder = this.app._gui.addFolder('Torus');
-    this.app._guiParams.moonFolder.open();
-    this.app._guiParams.torusFolder.open();
-    this.app._guiParams.moonFolder.add(this.moon, 'rotationSpeed', 0, 0.5, 0.001);
-    this.app._guiParams.torusFolder.add(this.torus, 'rotationSpeed', 0, 0.5, 0.001);
+    this.app.saveCameraStartPosition();
+    this.app.add(new Torus({ app, wireframe: false }));
+    this.app.add(new Moon({ app }));
+    this.app.add(...Array(200).fill().map(_ => new Star({ spread: 300 })));
     
     document.addEventListener('scroll', this.moveCamera);
     app.render();
@@ -75,8 +69,9 @@ export default {
   },
   //===============================================
   beforeUnmount() {
-    this.app._gui.domElement.remove();
-    this.app._stats.domElement.remove();
+    document.removeEventListener('scroll', this.moveCamera);
+    if (this.app._gui) this.app._gui.domElement.remove();
+    if (this.app._stats) this.app._stats.domElement.remove();
   }
   //===============================================
 }

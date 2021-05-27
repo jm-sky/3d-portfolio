@@ -15,7 +15,7 @@ class TerrainChunk {
   constructor(params) {
     this.width = params.width || 10;
     this.scale = params.scale || 1;
-    this.segments = params.segments || 128;
+    this.segments = params.segments || 256;
     this._params = params;
     this.init();
   }

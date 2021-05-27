@@ -1,9 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from './pages/Home.vue';
-import About from './pages/About.vue';
-import Portfolio from './pages/Portfolio.vue';
 import Maze from './pages/Maze.vue';
-import World from './pages/World.vue';
 import NotFoundComponent from './pages/NotFoundComponent.vue';
 
 const routes =[
@@ -13,7 +10,7 @@ const routes =[
   },
   {
     path: '/portfolio',
-    component: Portfolio
+    component: () => import('./pages/Portfolio.vue')
   },
   {
     path: '/maze',
@@ -21,7 +18,7 @@ const routes =[
   },
   {
     path: '/world',
-    component: World
+    component: () => import('./pages/World.vue')
   },
   {
     path: '/:pathMatch(.*)', 

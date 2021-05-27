@@ -50,6 +50,10 @@ export default {
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
+  background: #aaa5;
+  border: 1px solid #ccca;
+  padding: 0.25rem 0.0rem;
+  border-radius: 0.25rem;
 
   .router-link-active {
     box-shadow: rgba(255, 255, 255, 0.4) 0 0 0.5rem !important;

@@ -5,6 +5,7 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
 import Plane from './Plane.js';
 
 const SHADOWS = false;
+const DEBUG = false;
 
 //-------------------------------------------------------------------------
 /**
@@ -15,6 +16,7 @@ const SHADOWS = false;
 class App {
   //-------------------------------
   constructor(options = {}) {
+    this.app = this;
     this.options = options;
     this._containerSelector = options.containerSelector || '#canvas-wrapper';
     this._targetSelector = options.targetSelector || '#canvas';
@@ -38,7 +40,7 @@ class App {
     this.createCamera();
     this.createRenderer();
     this.createGUI();
-    if (this.options.helpers == false) this.addHelpers();
+    if (this.options.helpers) this.addHelpers();
     if (this.options.fog) this.addFog()
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -73,7 +75,7 @@ class App {
   createRenderer() {
     this.renderer = new THREE.WebGLRenderer({ 
       canvas: this.$canvas,
-      // antialias: true
+      antialias: true
     });
 
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -92,25 +94,35 @@ class App {
   }
   //-------------------------------
   createLights() {
-    this.lights.pointLight = new THREE.PointLight(0xffffff, 0.8);
-    this.lights.pointLight.position.set(9, 9, 11);
-    this.lights.ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
-    if (SHADOWS) {
-      this.lights.pointLight.castShadow = true;
-      this.lights.pointLight.shadow.mapSize.width = 512; // default
-      this.lights.pointLight.shadow.mapSize.height = 512; // default
-      this.lights.pointLight.shadow.camera.near = 0.5; // default
-      this.lights.pointLight.shadow.camera.far = 500; // default
-    }
-    this.scene.add(...Object.values(this.lights));
+    let pointLight = new THREE.PointLight(0xffffff, 0.8);
+    pointLight.name = 'pointLight';
+    pointLight.position.set(9, 9, 11);
+    pointLight.userData.showHelper = true;
+    if (SHADOWS) pointLight.castShadow = true;
+    if (SHADOWS) pointLight.shadow.mapSize.width = 512; // default
+    if (SHADOWS) pointLight.shadow.mapSize.height = 512; // default
+    if (SHADOWS) pointLight.shadow.camera.near = 0.5; // default
+    if (SHADOWS) pointLight.shadow.camera.far = 500; // default
+    this.helpers.lightHelper = new THREE.PointLightHelper(pointLight);
 
-    this.helpers.lightHelper = new THREE.PointLightHelper(this.lights.pointLight);
+    let ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+    ambientLight.name = 'ambientLight';
+
+    this.addLights(pointLight, ambientLight);
   }
   //-------------------------------
   _OnWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  //-------------------------------
+  addLights(...lights) {
+    lights.forEach(light => {
+      let name = light.name || `${light.constructor.name}__${(new Date()).getTime()}`
+      this.lights[name] = light;
+      this.scene.add(light);
+    });
   }
   //-------------------------------
   addHelpers() {
@@ -127,8 +139,15 @@ class App {
       this.entities[name] = this.entities[name] || [];
       this.entities[name].push(entity);
       if (entity.mesh) this.scene.add(entity.mesh);
-      console.log('[App][add]', name, entity);
+      if (DEBUG) console.log('[App][add]', name, entity);
     })
+  }
+  //-------------------------------
+  saveCameraStartPosition() {
+    this.camera.userData.start = this.camera.userData.start || {};
+    this.camera.userData.start.x = this.camera.userData.start.x || this.camera.position.x;
+    this.camera.userData.start.z = this.camera.userData.start.z || this.camera.position.z;
+    this.camera.userData.start.y = this.camera.userData.start.y || this.camera.position.y;
   }
   //-------------------------------
   _RAF() {

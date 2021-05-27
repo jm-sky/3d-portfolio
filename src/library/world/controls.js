@@ -163,7 +163,13 @@ export const controls = (function() {
                   document.body.mozRequestFullscreen ||
                   document.body.mozRequestFullScreen ||
                   document.body.webkitRequestFullscreen);
-              document.body.requestFullscreen();
+              
+              try {
+                document.body.requestFullscreen();
+              } catch(e) {
+                console.warn(e);
+              }
+
             } else {
               document.body.requestPointerLock();
             }

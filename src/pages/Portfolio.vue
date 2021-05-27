@@ -1,13 +1,13 @@
 <template>
   <BgCanvas :editMode="!showContent" />
   <a @click="switchContent" class="btn btn-dark border content-switch">
-    <i class="fa" :class="showContent ? 'fa-rocket' : 'fa-envelope-open-text'"></i>
+    <i class="fa" :class="switchIcon"></i>
   </a>
-  <HelloWorld v-if="showContent" />
+  <AboutMyself v-if="showContent" />
 </template>
 
 <script>
-import HelloWorld from '../components/HelloWorld.vue';
+import AboutMyself from '../components/AboutMyself.vue';
 import BgCanvas from '../components/BgCanvas.vue';
 
 export default {
@@ -15,13 +15,21 @@ export default {
   name: 'Portfolio',
   //===============================================
   components: {
-    HelloWorld, BgCanvas
+    AboutMyself, BgCanvas
   },
   //===============================================
   data() {
     return {
       showContent: true
     }
+  },
+  //===============================================
+  computed: {
+    //=================
+    switchIcon() {
+      return this.showContent ? 'fa-rocket' : 'fa-envelope-open-text';
+    }
+    //=================
   },
   //===============================================
   methods: {

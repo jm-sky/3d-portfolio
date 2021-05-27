@@ -2,7 +2,8 @@ import * as THREE from 'three';
 
 class Moon {
   //-------------------------------
-  constructor(options = {}) {
+  constructor(options = {}, app = null) {
+    this.app = options.app || app;
     this.options = options;
     this.orbitSize = options.orbitSize || 50;
     this.rotationSpeed = options.rotationSpeed || 0.01;
@@ -19,6 +20,8 @@ class Moon {
 
     this.mesh = group;
     this.mesh.position.y = 7;
+
+    this.createGUI();
   }
   //-------------------------------
   create_orbit() {
@@ -46,6 +49,13 @@ class Moon {
     this.moon.position.setZ(0);
     this.moon.castShadow = true;
     this.moon.receiveShadow = true;
+  }
+  //-------------------------------
+  createGUI() {
+    if (!this.app._gui) return;
+
+    this.app._guiParams.torusFolder = this.app._gui.addFolder('Torus');
+    this.app._guiParams.torusFolder.add(this, 'rotationSpeed', 0, 0.5, 0.001);
   }
   //-------------------------------
   update() {
