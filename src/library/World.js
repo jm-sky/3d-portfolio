@@ -1,7 +1,8 @@
-import * as THREE from './src/three';
-// import * as THREE from 'three';
-import FPSControls from './src/controls.js';
+import * as THREE from 'three';
+
+import {controls} from './world/controls.js';
 import TerrainChunkManager from './world/TerrainChunkManager';
+import Environment from './Environment';
 
 const loader = new THREE.TextureLoader();
 
@@ -21,36 +22,35 @@ class World {
   }
   //-------------------------------
   constructor() {
-    this.materials = [
-      new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/grass_combined.png') }),
-      new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/grass_combined.png') }),
-      new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/leaves_spruce_opaque.png') }),
-      new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/grass_combined.png') }),
-      new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/grass_combined.png') }),
-      new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/grass_combined.png') }),
-    ];
-    this.width = 10
-    this.height = 10;
-    this.size = 1;
-    this.thickness = 1;
-    this.span = 0;
+    // this.materials = [
+    //   new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/grass_combined.png') }),
+    //   new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/grass_combined.png') }),
+    //   new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/leaves_spruce_opaque.png') }),
+    //   new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/grass_combined.png') }),
+    //   new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/grass_combined.png') }),
+    //   new THREE.MeshStandardMaterial({ map: loader.load('./resources/minecraft/textures/blocks/grass_combined.png') }),
+    // ];
+    // this.width = 10
+    // this.height = 10;
+    // this.size = 1;
+    // this.thickness = 1;
+    // this.span = 0;
     this.mesh = new THREE.Group();
-    this._cells = {};
+    // this._cells = {};
 
-
-    for (let x = 0; x < this.width; x++) {
-      for (let z = 0; z < this.height; z++) {
-        const geometry = new THREE.BoxGeometry(this.size, this.thickness, this.size);
-        // const material = new THREE.MeshStandardMaterial({ color: 0x777777 });
-        const mesh = new THREE.Mesh(geometry, this.materials);
-        mesh.position.x = x * this.size - 1 + (x * this.span);
-        mesh.position.z = z * this.size - 1 + (z * this.span);
-        mesh.position.y = 0;
-        this.mesh.add(mesh);
-        let k = this._key(x, 0, z);
-        this._cells[k] = mesh;
-      }
-    }
+    // for (let x = 0; x < this.width; x++) {
+    //   for (let z = 0; z < this.height; z++) {
+    //     const geometry = new THREE.BoxGeometry(this.size, this.thickness, this.size);
+    //     // const material = new THREE.MeshStandardMaterial({ color: 0x777777 });
+    //     const mesh = new THREE.Mesh(geometry, this.materials);
+    //     mesh.position.x = x * this.size - 1 + (x * this.span);
+    //     mesh.position.z = z * this.size - 1 + (z * this.span);
+    //     mesh.position.y = 0;
+    //     this.mesh.add(mesh);
+    //     let k = this._key(x, 0, z);
+    //     this._cells[k] = mesh;
+    //   }
+    // }
   }
   //-------------------------------
   _LoadBackground() {
@@ -72,15 +72,11 @@ class World {
     this.app.camera.position.setZ(10);
     this.app.camera.position.setY(220);
     this.app.add(this);
-    this._LoadBackground();
+    // this.app.addFog();
+    // this._LoadBackground();
 
-    this.terrainManager = new TerrainChunkManager({
-      scene: app.scene,
-      gui: app._gui,
-      guiParams: app._guiParams
-    })
-
-    this.app.add(this.terrainManager);
+    this.terrainManager = new TerrainChunkManager(app)
+    this.environment = new Environment(app);
 
     let light = new THREE.DirectionalLight(0x808080, 1, 100);
     light.position.set(-100, 100, -100);
@@ -89,11 +85,7 @@ class World {
     this.app.lights['directionalLight'] = light;
     this.app.scene.add(light);
 
-    // this.app.add(new FPSControls({
-    //   cells: null,
-    //   scene: app.scene,
-    //   camera: app.camera
-    // }));
+    this.app.add(new controls.FPSControls(app));
   }
   //-------------------------------
 }

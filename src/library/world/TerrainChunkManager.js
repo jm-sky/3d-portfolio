@@ -1,5 +1,5 @@
 // import * as THREE from 'three';
-import * as THREE from '../src/three';
+import * as THREE from 'three';
 import TerrainChunk from './TerrainChunk';
 import Heightmap from './Heightmap';
 import HeightGenerator from './HeightGenerator';
@@ -10,7 +10,7 @@ class TerrainChunkManager {
   //-------------------------------
   constructor(params = {}) {
     this._params = params;
-    this._chunkSize = params.chunkSize || 500;
+    this._chunkSize = params.chunkSize || 1000;
     this.init(params);
   }
   //-------------------------------
@@ -18,10 +18,11 @@ class TerrainChunkManager {
     this._initNoise(params);
     this._initBiomes(params);
     this._initTerrain(params);
+    params.add(this);
   }
   //-------------------------------
   _initNoise(params) {
-    params.guiParams.noise = {
+    params._guiParams.noise = {
       octaves: 6,
       persistence: 0.707,
       lacunarity: 1.8,
@@ -32,25 +33,25 @@ class TerrainChunkManager {
       seed: 277945293654
     };
 
-    const noiseRollup = params.gui.addFolder('Terrain.Noise');
-    noiseRollup.add(params.guiParams.noise, "noiseType", ['simplex', 'perlin', 'rand']).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.noise, "scale", 32.0, 4096.0).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.noise, "octaves", 1, 20, 1).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.noise, "persistence", 0.25, 1.0).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.noise, "lacunarity", 0.01, 4.0).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.noise, "exponentiation", 0.1, 10.0).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.noise, "height", 0, 512).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.noise, "seed", 0, 99999999, 1).onChange(this.onNoiseChanged.bind(this));
+    const noiseRollup = params._gui.addFolder('Terrain.Noise');
+    noiseRollup.add(params._guiParams.noise, "noiseType", ['simplex', 'perlin', 'rand']).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.noise, "scale", 32.0, 4096.0).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.noise, "octaves", 1, 20, 1).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.noise, "persistence", 0.25, 1.0).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.noise, "lacunarity", 0.01, 4.0).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.noise, "exponentiation", 0.1, 10.0).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.noise, "height", 0, 512).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.noise, "seed", 0, 99999999, 1).onChange(this.onNoiseChanged.bind(this));
 
-    this._noise = new noise.Noise(params.guiParams.noise);
+    this._noise = new noise.Noise(params._guiParams.noise);
 
-    params.guiParams.heightmap = {
+    params._guiParams.heightmap = {
       height: 16,
     }
   }
   //-------------------------------
   _initBiomes(params) {
-    params.guiParams.biomes = {
+    params._guiParams.biomes = {
       octaves: 2,
       persistence: 0.5,
       lacunarity: 2.0,
@@ -62,18 +63,18 @@ class TerrainChunkManager {
       height: 1
     };
 
-    const noiseRollup = params.gui.addFolder('Terrain.Biomes');
-    noiseRollup.add(params.guiParams.biomes, "scale", 64.0, 4096.0).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.biomes, "octaves", 1, 20, 1).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.biomes, "persistence", 0.01, 1.0).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.biomes, "lacunarity", 0.01, 4.0).onChange(this.onNoiseChanged.bind(this));
-    noiseRollup.add(params.guiParams.biomes, "exponentiation", 0.1, 10.0).onChange(this.onNoiseChanged.bind(this));
+    const noiseRollup = params._gui.addFolder('Terrain.Biomes');
+    noiseRollup.add(params._guiParams.biomes, "scale", 64.0, 4096.0).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.biomes, "octaves", 1, 20, 1).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.biomes, "persistence", 0.01, 1.0).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.biomes, "lacunarity", 0.01, 4.0).onChange(this.onNoiseChanged.bind(this));
+    noiseRollup.add(params._guiParams.biomes, "exponentiation", 0.1, 10.0).onChange(this.onNoiseChanged.bind(this));
 
-    this._biomes = new noise.Noise(params.guiParams.biomes);
+    this._biomes = new noise.Noise(params._guiParams.biomes);
   }
   //-------------------------------
   _initTerrain(params) {
-    params.guiParams.terrain = {
+    params._guiParams.terrain = {
       wireframe: false,
     };
 
@@ -89,10 +90,10 @@ class TerrainChunkManager {
       }
     }
 
-    const terrainRollup = params.gui.addFolder('Terrain');
-    terrainRollup.add(params.guiParams.terrain, 'wireframe').onChange(() => {
+    const terrainRollup = params._gui.addFolder('Terrain');
+    terrainRollup.add(params._guiParams.terrain, 'wireframe').onChange(() => {
       for (let k in this._chunks) {
-        this._chunks[k].chunk._plane.material.wireframe = params.guiParams.terrain.wireframe;
+        this._chunks[k].chunk._plane.material.wireframe = params._guiParams.terrain.wireframe;
       }
     });
   }
@@ -138,7 +139,7 @@ class TerrainChunkManager {
   //-------------------------------
   SetHeightmap(img) {
     const heightmap = new HeightGenerator(
-      new Heightmap(this._params.guiParams.heightmap, img),
+      new Heightmap(this._params._guiParams.heightmap, img),
       new THREE.Vector2(0, 0), 250, 300
     );
 
@@ -147,7 +148,6 @@ class TerrainChunkManager {
       this._chunks[k].chunk.rebuild();
     }
   }
-
   //-------------------------------
   update(timeInMs) {
   }

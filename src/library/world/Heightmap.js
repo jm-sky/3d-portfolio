@@ -1,4 +1,4 @@
-import * as THREE from '../src/three';
+import * as THREE from 'three';
 // import * as THREE from 'three';
 import graphics from '../src/graphics';
 

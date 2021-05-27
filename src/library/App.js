@@ -22,7 +22,10 @@ class App {
     this.entities = [];
     this.helpers = {};
     this.lights = {};
+
     this._previousRAF = null;
+    this._minFrameTime = 1.0 / 10.0;
+
     this.init();
   }
   //-------------------------------
@@ -35,7 +38,8 @@ class App {
     this.createCamera();
     this.createRenderer();
     this.createGUI();
-    this.addHelpers();
+    if (this.options.helpers == false) this.addHelpers();
+    if (this.options.fog) this.addFog()
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
@@ -57,7 +61,6 @@ class App {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x000011);;
     this.scene.background = this.bg;
-    // this.scene.fog = new THREE.Fog(0xcce0ff, 50, 1000);
     this.helpers.gridHelper = new THREE.GridHelper(200, 50);
   }
   //-------------------------------
@@ -111,16 +114,20 @@ class App {
   }
   //-------------------------------
   addHelpers() {
-    if (this.options.helpers == false) return
     this.scene.add(...Object.values(this.helpers));
+  }
+  //-------------------------------
+  addFog() {
+    this.scene.fog = new THREE.Fog(0xcce0ff, 50, 1000);
   }
   //-------------------------------
   add(...entities) {
     entities.forEach(entity => {
-      let className = entity.constructor.name || 'unknown';
-      this.entities[className] = this.entities[className] || [];
-      this.entities[className].push(entity);
+      let name = entity.name || entity.constructor.name || 'unknown';
+      this.entities[name] = this.entities[name] || [];
+      this.entities[name].push(entity);
       if (entity.mesh) this.scene.add(entity.mesh);
+      console.log('[App][add]', name, entity);
     })
   }
   //-------------------------------
@@ -134,17 +141,16 @@ class App {
     })
   }
   //-------------------------------
-  render(timeInMs) {
-    let entities = Object.values(this.entities).flat();
+  render(timeInMs = 0) {
+    // const timeInSeconds = Math.min(timeInMS * 0.001, this._minFrameTime);
+    const entities = Object.values(this.entities).flat();
     entities.filter(entity => entity.update).forEach(entity => {
       entity.update(timeInMs);
-    })
+    });
 
     this.renderer.render(this.scene, this.camera);
 
-    if (this._stats) {
-      this._stats.update();
-    }
+    if (this._stats) this._stats.update();
 
     this._RAF();
   }
