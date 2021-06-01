@@ -1,6 +1,6 @@
 :root {
   --dark-bg: rgba(15, 15, 15, 0.7);
-  --spacing: 350px;
+  --spacing: 200px;
 }
 
 html, body {
@@ -29,6 +29,7 @@ main {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
 }
+
 
 header {
   padding: 1rem;

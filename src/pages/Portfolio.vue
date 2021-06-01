@@ -50,4 +50,9 @@ export default {
   left: 0.5rem;
   z-index: 999;
 }
+@media (max-width: 550px) {
+  .content-switch {
+    bottom: 3.5rem;
+  }
+}
 </style>
