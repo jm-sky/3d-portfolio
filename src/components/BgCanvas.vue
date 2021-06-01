@@ -30,10 +30,13 @@ export default {
   //===============================================
   watch: {
     //=================
-    editMode() {
-      if (this.app._gui) this.app._gui.domElement.hidden = !this.editMode;
-      if (this.app._stats) this.app._stats.domElement.hidden = !this.editMode;
-    }
+    editMode: {
+      immediate: true,
+      handler() {
+        if (this.app._gui ?? this.app._gui.domElement) this.app._gui.domElement.hidden = !this.editMode;
+        if (this.app._stats ?? this.app._stats.domElement) this.app._stats.domElement.hidden = !this.editMode;
+      }
+    },
     //=================
   },
   //===============================================
